@@ -134,7 +134,7 @@
                                         <TableCell class="flex items-center justify-center">
                                             <Drawer>
                                                 <DrawerTrigger>
-                                                    <NuxtImg class="w-6 h-6 rounded border-2 border-green-500" :src="config.public.api + info.image" />
+                                                    <img class="w-6 h-6 rounded border-2 border-green-500" :src="config.public.api + info.image" />
                                                 </DrawerTrigger>
                                                 <DrawerContent>
                                                     <DrawerHeader>
