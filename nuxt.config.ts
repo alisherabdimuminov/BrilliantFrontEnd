@@ -7,5 +7,8 @@ export default defineNuxtConfig({
         public: {
             api: "https://bovie.uz/",
         }
-    }
+    },
+    image: {
+        domains: ['bestedu.uz']
+    }    
 });
