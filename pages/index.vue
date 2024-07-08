@@ -129,7 +129,7 @@
                                         <TableCell>
                                             <p class="bg-green-500 text-white text-sm rounded text-center" v-if="info.type === 'input'">Kirish</p>
                                             <p class="bg-red-500 text-white text-sm rounded text-center" v-if="info.type === 'output'">Chiqish</p>
-                                            <p class="bg-blue-500 text-white text-sm rounded text-center" v-if="info.type === 'group_input'">Guruh</p>
+                                            <p class="bg-blue-500 text-white text-sm rounded text-center" v-if="info.type === 'group_input'">Guruh {{ info.count }}</p>
                                         </TableCell>
                                         <TableCell class="flex items-center justify-center">
                                             <Drawer>
@@ -207,7 +207,7 @@ const data = ref([
 ])
 
 const date = ref(null);
-let timer = null;
+let timer: any = null;
 
 
 const x = (d: { x: number, y: number }) => d.x
