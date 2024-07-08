@@ -141,7 +141,7 @@
                                                         <DrawerTitle>{{ info.date }}</DrawerTitle>
                                                         <DrawerDescription></DrawerDescription>
                                                     </DrawerHeader>
-                                                    <NuxtImg class="h-3/2 rounded" :src="config.public.api + info.image" />
+                                                    <NuxtImg class="h-fit rounded" :src="config.public.api + info.image" />
                                                 </DrawerContent>
                                             </Drawer>
                                         </TableCell>
