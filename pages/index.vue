@@ -99,7 +99,7 @@
                         </CardHeader>
                         <CardContent class="w-full overflow-auto">
                             <ScrollArea>
-                                <VisXYContainer :data="data">
+                                <VisXYContainer :data="statistics">
                                     <VisStackedBar :x="x" :y="y" />
                                     <VisAxis type="x" />
                                     <VisAxis type="y" />
@@ -141,7 +141,7 @@
                                                         <DrawerTitle>{{ info.date }}</DrawerTitle>
                                                         <DrawerDescription></DrawerDescription>
                                                     </DrawerHeader>
-                                                    <NuxtImg height="500" class="h-fit rounded" :src="config.public.api + info.image" />
+                                                    <NuxtImg class="h-full rounded" :src="config.public.api + info.image" />
                                                 </DrawerContent>
                                             </Drawer>
                                         </TableCell>
@@ -171,47 +171,9 @@ useHead({
 })
 
 
-const data = ref([
-    {
-        x: 1,
-        y: 2
-    },
-    {
-        x: 2,
-        y: 5
-    },
-    {
-        x: 3,
-        y: 2
-    },
-    {
-        x: 4,
-        y: 10
-    },
-    {
-        x: 5,
-        y: 2
-    },
-    {
-        x: 6,
-        y: 15
-    },
-    {
-        x: 7,
-        y: 20
-    },
-    {
-        x: 8,
-        y: 1
-    },
-])
-
 const date = ref(null);
 let timer: any = null;
 
-
-const x = (d: { x: number, y: number }) => d.x
-const y = (d: { x: number, y: number }) => d.y
 
 
 interface Info {
@@ -227,6 +189,10 @@ let infos = ref<Info[]>([]);
 let count_inputs = ref(0);
 let count_outputs = ref(0);
 let count_group_inputs = ref(0);
+let statistics = ref([]);
+
+const x = (d: { x: number, y: number }) => d.x
+const y = (d: { x: number, y: number }) => d.y
 
 
 const getData = async () => {
@@ -322,6 +288,16 @@ const getData = async () => {
             }
         });
         count_group_inputs.value = response.data.count;
+
+        // statistics
+        response = await $fetch(`${config.public.api}api/statistics/`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Token ${getUser.value?.token}`
+            }
+        });
+        statistics.value = response.data.statistics;
+        console.log(statistics.value);
     }
 }
 
@@ -391,6 +367,16 @@ const update = async (value: any) => {
         }
     });
     count_group_inputs.value = response.data.count;
+
+    // statistics
+    response = await $fetch(`${config.public.api}api/statistics/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Token ${getUser.value?.token}`
+            }
+        });
+    statistics.value = response.data.statistics;
+    console.log(statistics.value);
 }
 
 const logout = () => {
