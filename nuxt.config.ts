@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt", "@nuxt/image"],
     runtimeConfig: {
         public: {
-            api: "http://localhost:8000/",
+            api: "https://bovie.uz/",
         }
     }
 });
