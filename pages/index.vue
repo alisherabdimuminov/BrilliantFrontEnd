@@ -73,7 +73,7 @@
                             <div class="flex justify-between">
                                 <div>{{ count_outputs }}</div>
                                 <div class="">
-                                    <ArrowUpFromDot :size="20" color="#22c55e" />
+                                    <ArrowDownToDot :size="20" color="#ef4444" />
                                 </div>
                             </div>
                         </CardContent>
@@ -86,7 +86,7 @@
                             <div class="flex justify-between">
                                 <div>{{ count_group_inputs }}</div>
                                 <div class="">
-                                    <ArrowDownToDot :size="20" color="#ef4444" />
+                                    <ArrowsUpFromLine :size="20" color="#3b82f6" />
                                 </div>
                             </div>
                         </CardContent>
@@ -100,9 +100,12 @@
                         <CardContent class="w-full overflow-auto">
                             <ScrollArea>
                                 <VisXYContainer :data="statistics">
-                                    <VisStackedBar :x="x" :y="y" />
                                     <VisAxis type="x" />
-                                    <VisAxis type="y" />
+                                    <VisAxis type="y1" />
+                                    <VisAxis type="y2" />
+                                    <VisAxis type="y3" />
+                                    <VisGroupedBar :x="x" :y="y" :color="colors" :barPadding="0.5"/>
+                                    <VisTooltip :triggers="triggers"/>
                                 </VisXYContainer>
                             </ScrollArea>
                         </CardContent>
@@ -121,33 +124,35 @@
                                         <TableHead>Rasm</TableHead>
                                     </TableRow>
                                 </TableHeader>
-                                <TableBody>
-                                    <TableRow v-for="(info, index) in infos" :key="index">
-                                        <TableCell>{{ info.id }}</TableCell>
-                                        <TableCell>{{ info.camera }}</TableCell>
-                                        <TableCell>{{ info.date }}</TableCell>
-                                        <TableCell>
-                                            <p class="bg-green-500 text-white text-sm rounded text-center" v-if="info.type === 'input'">Kirish</p>
-                                            <p class="bg-red-500 text-white text-sm rounded text-center" v-if="info.type === 'output'">Chiqish</p>
-                                            <p class="bg-blue-500 text-white text-sm rounded text-center" v-if="info.type === 'group_input'">Guruh {{ info.count }}</p>
-                                        </TableCell>
-                                        <TableCell class="flex items-center justify-center">
-                                            <Drawer>
-                                                <DrawerTrigger>
-                                                    <img class="w-6 h-6 rounded border-2 border-green-500" :src="config.public.api + info.image" />
-                                                </DrawerTrigger>
-                                                <DrawerContent>
-                                                    <DrawerHeader>
-                                                        <DrawerTitle>{{ info.date }}</DrawerTitle>
-                                                        <DrawerDescription></DrawerDescription>
-                                                    </DrawerHeader>
-                                                    <!-- <NuxtImg class="h-full rounded" :src="config.public.api + info.image" /> -->
-                                                     <img class="h-full rounded" :src="config.public.api + info.image">
-                                                </DrawerContent>
-                                            </Drawer>
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
+                                <ClientOnly>
+                                    <TableBody>
+                                        <TableRow v-for="(info, index) in infos" :key="index">
+                                            <TableCell>{{ info.id }}</TableCell>
+                                            <TableCell>{{ info.camera }}</TableCell>
+                                            <TableCell>{{ info.date }}</TableCell>
+                                            <TableCell>
+                                                <p class="bg-green-500 text-white text-sm rounded text-center" v-if="info.type === 'input'">Kirish</p>
+                                                <p class="bg-red-500 text-white text-sm rounded text-center" v-if="info.type === 'output'">Chiqish</p>
+                                                <p class="bg-blue-500 text-white text-sm rounded text-center" v-if="info.type === 'group_input'">Guruh {{ info.count }}</p>
+                                            </TableCell>
+                                            <TableCell class="flex items-center justify-center">
+                                                <Drawer>
+                                                    <DrawerTrigger>
+                                                        <img class="w-6 h-6 rounded border-2 border-green-500" :src="config.public.api + info.image" />
+                                                    </DrawerTrigger>
+                                                    <DrawerContent>
+                                                        <DrawerHeader>
+                                                            <DrawerTitle>{{ info.date }}</DrawerTitle>
+                                                            <DrawerDescription></DrawerDescription>
+                                                        </DrawerHeader>
+                                                        <!-- <NuxtImg class="h-full rounded" :src="config.public.api + info.image" /> -->
+                                                        <img class="h-full rounded" :src="config.public.api + info.image">
+                                                    </DrawerContent>
+                                                </Drawer>
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </ClientOnly>
                             </Table>
                         </CardContent>
                     </Card>
@@ -158,9 +163,10 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowUpFromDot, ArrowDownToDot, Home, Users, Cog, Bold, LogOut } from "lucide-vue-next";
-import { VisXYContainer, VisStackedBar, VisAxis } from '@unovis/vue'
+import { ArrowUpFromDot, ArrowDownToDot, ArrowsUpFromLine, Home, Users, Cog, Bold, LogOut } from "lucide-vue-next";
+import { VisXYContainer, VisStackedBar, VisGroupedBar, VisAxis, VisTooltip } from '@unovis/vue'
 import { useAuth } from "~/composables/useAuth";
+import { GroupedBar, StackedBar } from "@unovis/ts";
 
 const router = useRouter();
 const route = useRoute();
@@ -186,14 +192,47 @@ interface Info {
     image: string,
 }
 
+interface Data {
+    x: number
+    y1: number
+    y2: number
+    y3: number
+}
+
 let infos = ref<Info[]>([]);
 let count_inputs = ref(0);
 let count_outputs = ref(0);
 let count_group_inputs = ref(0);
-let statistics = ref([]);
+let statistics = ref<Data[]>([]);
+
+let data = ref<Data[]>([
+    {
+        x: 2,
+        y1: 1,
+        y2: 2,
+        y3: 3,
+    },
+    {
+        x: 3,
+        y1: 3,
+        y2: 2,
+        y3: 1,
+    },
+]);
+
+const triggers = {
+    [GroupedBar.selectors.bar]: (d: Data) => `<span>${d.x}</span>`
+}
 
 const x = (d: { x: number, y: number }) => d.x
-const y = (d: { x: number, y: number }) => d.y
+// const y = (d: { x: number, y: number }) => d.y
+const y = [
+    (d: Data) => d.y1,
+    (d: Data) => d.y2,
+    (d: Data) => d.y3,
+];
+
+let colors = (d: Data, i: number) => ["#22c55e", "#ef4444", "#3b82f6"][i];
 
 
 const getData = async () => {
