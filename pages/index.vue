@@ -117,8 +117,8 @@
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>ID</TableHead>
-                                        <TableHead>Kamera</TableHead>
+                                        <TableHead class="hidden md:block">ID</TableHead>
+                                        <TableHead class="hidden md:block">Kamera</TableHead>
                                         <TableHead>Vaqt</TableHead>
                                         <TableHead>Holat</TableHead>
                                         <TableHead>Rasm</TableHead>
@@ -127,8 +127,8 @@
                                 <ClientOnly>
                                     <TableBody>
                                         <TableRow v-for="(info, index) in infos" :key="index">
-                                            <TableCell>{{ info.id }}</TableCell>
-                                            <TableCell>{{ info.camera }}</TableCell>
+                                            <TableCell class="hidden md:block">{{ info.id }}</TableCell>
+                                            <TableCell class="hidden md:block">{{ info.camera }}</TableCell>
                                             <TableCell>{{ info.date }}</TableCell>
                                             <TableCell>
                                                 <p class="bg-green-500 text-white text-sm rounded text-center" v-if="info.type === 'input'">Kirish</p>
@@ -205,27 +205,12 @@ let count_outputs = ref(0);
 let count_group_inputs = ref(0);
 let statistics = ref<Data[]>([]);
 
-let data = ref<Data[]>([
-    {
-        x: 2,
-        y1: 1,
-        y2: 2,
-        y3: 3,
-    },
-    {
-        x: 3,
-        y1: 3,
-        y2: 2,
-        y3: 1,
-    },
-]);
 
 const triggers = {
-    [GroupedBar.selectors.bar]: (d: Data) => `<span>${d.x}</span>`
+    [GroupedBar.selectors.barGroup]: (d: Data) => `<span>Kirish: ${d.y1}</span><br><span>Chiqish: ${d.y2}</span><br><span>Guruh: ${d.y3}</span><br>`
 }
 
-const x = (d: { x: number, y: number }) => d.x
-// const y = (d: { x: number, y: number }) => d.y
+const x = (d: { x: number, y: number }) => d.x;
 const y = [
     (d: Data) => d.y1,
     (d: Data) => d.y2,
