@@ -117,8 +117,8 @@
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead class="hidden md:block">ID</TableHead>
-                                        <TableHead class="hidden md:block">Kamera</TableHead>
+                                        <TableHead class="hidden md:inline-block">ID</TableHead>
+                                        <TableHead class="hidden md:inline-block">Kamera</TableHead>
                                         <TableHead>Vaqt</TableHead>
                                         <TableHead>Holat</TableHead>
                                         <TableHead>Rasm</TableHead>
@@ -127,8 +127,8 @@
                                 <ClientOnly>
                                     <TableBody>
                                         <TableRow v-for="(info, index) in infos" :key="index">
-                                            <TableCell class="hidden md:flex">{{ info.id }}</TableCell>
-                                            <TableCell class="hidden md:flex">{{ info.camera }}</TableCell>
+                                            <TableCell class="hidden md:inline-block">{{ info.id }}</TableCell>
+                                            <TableCell class="hidden md:inline-block">{{ info.camera }}</TableCell>
                                             <TableCell>{{ info.date }}</TableCell>
                                             <TableCell>
                                                 <p class="bg-green-500 text-white text-sm rounded text-center" v-if="info.type === 'input'">Kirish</p>
