@@ -127,8 +127,8 @@
                                 <ClientOnly>
                                     <TableBody>
                                         <TableRow v-for="(info, index) in infos" :key="index">
-                                            <TableCell class="hidden md:block">{{ info.id }}</TableCell>
-                                            <TableCell class="hidden md:block">{{ info.camera }}</TableCell>
+                                            <TableCell class="hidden md:inline-block">{{ info.id }}</TableCell>
+                                            <TableCell class="hidden md:inline-block">{{ info.camera }}</TableCell>
                                             <TableCell>{{ info.date }}</TableCell>
                                             <TableCell>
                                                 <p class="bg-green-500 text-white text-sm rounded text-center" v-if="info.type === 'input'">Kirish</p>
