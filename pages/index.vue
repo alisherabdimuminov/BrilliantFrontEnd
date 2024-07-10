@@ -92,7 +92,7 @@
                         </CardContent>
                     </Card>
                 </div> <br>
-                <div>
+                <div class="hidden md:block">
                     <Card>
                         <CardHeader>
                             <CardTitle>Statistics</CardTitle>
@@ -125,7 +125,7 @@
                                     </TableRow>
                                 </TableHeader>
                                 <ClientOnly>
-                                    <TableBody>
+                                    <TableBody class="overflow-auto">
                                         <TableRow v-for="(info, index) in infos" :key="index">
                                             <TableCell class="hidden md:inline-block">{{ info.id }}</TableCell>
                                             <TableCell class="hidden md:inline-block">{{ info.camera }}</TableCell>
