@@ -8,12 +8,16 @@
             </p>
             <ul class="md:pl-2 mt-2 grid gap-3">
                 <li class="border border-blue-500 bg-blue-500/10 text-blue-500 md:flex md:gap-3 md:items-center md:p-2 p-1 rounded">
-                    <Home />
-                    <span class="hidden md:block">Bosh sahifa</span>
+                    <NuxtLink to="/" class="md:flex md:gap-3 md:items-center md:p-2 p-1">
+                        <Home />
+                        <span class="hidden md:block">Bosh sahifa</span>
+                    </NuxtLink>
                 </li>
                 <li class="text-blue-500 md:flex md:gap-3 md:items-center md:p-2 p-1 rounded cursor-pointer hover:border hover:border-blue-500 hover:bg-blue-500/10">
-                    <Users />
-                    <span class="hidden md:block">Ishchilar</span>
+                    <NuxtLink to="/workers" class="md:flex md:gap-3 md:items-center md:p-2 p-1">
+                        <Users />
+                        <span class="hidden md:block">Ishchilar</span>
+                    </NuxtLink>
                 </li>
                 <li class="text-blue-500 md:flex md:gap-3 md:items-center md:p-2 p-1 rounded cursor-pointer hover:border hover:border-blue-500 hover:bg-blue-500/10">
                     <Cog />
