@@ -140,19 +140,14 @@
                                                 <p class="bg-blue-500 text-white text-sm rounded text-center" v-if="info.type === 'group_input'">Guruh {{ info.count }}</p>
                                             </TableCell>
                                             <TableCell class="flex items-center justify-center">
-                                                <Drawer>
-                                                    <DrawerTrigger>
+                                                <Dialog>
+                                                    <DialogTrigger>
                                                         <img class="w-6 h-6 rounded border-2 border-green-500" :src="config.public.api + info.image" />
-                                                    </DrawerTrigger>
-                                                    <DrawerContent>
-                                                        <DrawerHeader>
-                                                            <DrawerTitle>{{ info.date }}</DrawerTitle>
-                                                            <DrawerDescription></DrawerDescription>
-                                                        </DrawerHeader>
-                                                        <!-- <NuxtImg class="h-full rounded" :src="config.public.api + info.image" /> -->
-                                                        <img class="h-full rounded" :src="config.public.api + info.image">
-                                                    </DrawerContent>
-                                                </Drawer>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <img class="w-full -h-full" :src="config.public.api + info.image">
+                                                    </DialogContent>
+                                                </Dialog>
                                             </TableCell>
                                         </TableRow>
                                     </TableBody>
@@ -182,7 +177,7 @@ useHead({
 })
 
 
-const date = ref(null);
+const date = ref<Date>();
 let timer: any = null;
 
 

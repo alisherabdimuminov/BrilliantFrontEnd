@@ -61,55 +61,69 @@
                             <SelectValue placeholder="Select worker" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem @click="update" v-for="(worker, index) in workers" :key="index" :value="worker.id">{{ worker.fullname }}</SelectItem>
+                            <SelectItem @click="update" v-for="(worker, index) in workers" :key="index" :value="worker.id.toString()">{{ worker.fullname }}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div> <br>
+                <div class="hidden md:block">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Statistics</CardTitle>
+                        </CardHeader>
+                        <CardContent class="w-full overflow-auto">
+                            <ScrollArea>
+                                <VisXYContainer :data="statistics">
+                                    <VisAxis type="x" />
+                                    <VisAxis type="y1" />
+                                    <VisAxis type="y2" />
+                                    <VisGroupedBar :x="x" :y="y" :color="colors" :barPadding="0.5"/>
+                                    <VisTooltip :triggers="triggers"/>
+                                </VisXYContainer>
+                            </ScrollArea>
+                        </CardContent>
+                    </Card>
+                </div> <br>
                 <div>
                     <Card>
-                        <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>ID</TableHead>
-                                        <TableHead>Time</TableHead>
-                                        <TableHead>FullName</TableHead>
-                                        <TableHead>Type</TableHead>
-                                        <TableHead>Rasm</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <ClientOnly>
-                                    <TableBody class="overflow-auto">
-                                        <TableRow v-for="(info, index) in infos" :key="index">
-                                            <TableCell class="hidden md:inline-block">{{ index+1 }}</TableCell>
-                                            <TableCell>{{ info.date }}</TableCell>
-                                            <TableCell>
-                                                <p v-if="info.worker">{{ info.worker.fullname }}</p>
-                                                <p v-else>-----</p>
-                                            </TableCell>
-                                            <TableCell>
-                                                <p class="bg-green-500 text-white text-sm rounded text-center" v-if="info.type === 'worker'">Kirish</p>
-                                                <p class="bg-sky-500 text-white text-sm rounded text-center" v-if="info.type === 'customer'">Mijoz</p>
-                                            </TableCell>
-                                            <TableCell class="flex items-center justify-center">
-                                                <Drawer>
-                                                    <DrawerTrigger>
-                                                        <img class="w-6 h-6 rounded border-2 border-green-500" :src="config.public.api + info.image" />
-                                                    </DrawerTrigger>
-                                                    <DrawerContent>
-                                                        <DrawerHeader>
-                                                            <DrawerTitle>{{ info.date }}</DrawerTitle>
-                                                            <DrawerDescription></DrawerDescription>
-                                                        </DrawerHeader>
-                                                        <!-- <NuxtImg class="h-full rounded" :src="config.public.api + info.image" /> -->
-                                                        <img class="h-full rounded" :src="config.public.api + info.image">
-                                                    </DrawerContent>
-                                                </Drawer>
-                                            </TableCell>
+                        <CardContent class="w-full overflow-x-auto">
+                            <ScrollArea class="w-72 md:w-full">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Time</TableHead>
+                                            <TableHead>FullName</TableHead>
+                                            <TableHead>Type</TableHead>
+                                            <TableHead>Rasm</TableHead>
                                         </TableRow>
-                                    </TableBody>
-                                </ClientOnly>
-                            </Table>
+                                    </TableHeader>
+                                    <ClientOnly>
+                                            <TableBody class="w-64 overflow-auto">
+                                                <TableRow v-for="(info, index) in infos" :key="index">
+                                                    <TableCell>{{ info.date }}</TableCell>
+                                                    <TableCell>
+                                                        <p v-if="info.worker">{{ info.worker.fullname }}</p>
+                                                        <p v-else>-----</p>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <p class="bg-green-500 text-white text-sm rounded text-center" v-if="info.type === 'worker'">Kirish</p>
+                                                        <p class="bg-sky-500 text-white text-sm rounded text-center" v-if="info.type === 'customer'">Mijoz</p>
+                                                    </TableCell>
+                                                    <TableCell class="flex items-center justify-center">
+                                                        <Dialog>
+                                                            <DialogTrigger>
+                                                                <img class="w-6 h-6 rounded border-2 border-green-500" :src="config.public.api + info.image" />
+                                                            </DialogTrigger>
+                                                            <DialogContent>
+                                                                <img class="w-full -h-full" :src="config.public.api + info.image">
+                                                            </DialogContent>
+                                                        </Dialog>
+                                                    </TableCell>
+                                                </TableRow>
+                                            </TableBody>
+                                    </ClientOnly>
+                                </Table>
+                                <ScrollBar orientation="horizontal" />
+                            </ScrollArea>
                         </CardContent>
                     </Card>
                 </div> <br>
@@ -156,7 +170,29 @@ interface Info {
     worker?: Worker
 }
 
+
+interface Data {
+    x: number
+    y1: number
+    y2: number
+}
+
+
 const infos = ref<Info[]>();
+let statistics = ref<Data[]>([]);
+
+const triggers = {
+    [GroupedBar.selectors.barGroup]: (d: Data) => `<span>Mijozlar: ${d.y1}</span><br><span>Ishchilar: ${d.y2}</span><br>`
+}
+
+const x = (d: { x: number, y: number }) => d.x;
+const y = [
+    (d: Data) => d.y1,
+    (d: Data) => d.y2,
+];
+
+let colors = (d: Data, i: number) => ["#22c55e", "#ef4444"][i];
+
 
 
 const getData = async () => {
@@ -202,6 +238,16 @@ const getData = async () => {
             })
         }
     }
+
+    // statistics
+    let response = await $fetch(`${config.public.api}api/statistics/`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Token ${getUser.value?.token}`
+        }
+    });
+    statistics.value = response.data.statistics;
+    console.log(statistics.value);
 }
 
 
@@ -232,7 +278,7 @@ onBeforeUnmount(() => {
 
 const update = async (value: any) => {
     date.value = value;
-    let response: any = await $fetch(`${config.public.api}api/faces/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}`, {
+    let response: any = await $fetch(`${config.public.api}api/faces/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}${worker.value ? '&worker='+worker.value.toString() : ''}`, {
         method: "GET",
         headers: {
             "Authorization": `Token ${getUser.value?.token}`
@@ -252,6 +298,15 @@ const update = async (value: any) => {
 
         })
     }
+    // statistics
+    response = await $fetch(`${config.public.api}api/statistics/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Token ${getUser.value?.token}`
+        }
+    });
+    statistics.value = response.data.statistics;
+    console.log(statistics.value);
 }
 
 const update_worker = async () => {
