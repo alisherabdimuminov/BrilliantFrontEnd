@@ -240,7 +240,7 @@ const getData = async () => {
     }
 
     // statistics
-    let response = await $fetch(`${config.public.api}api/statistics/`, {
+    let response = await $fetch(`${config.public.api}api/statistics/workers/`, {
         method: "GET",
         headers: {
             "Authorization": `Token ${getUser.value?.token}`
@@ -299,7 +299,7 @@ const update = async (value: any) => {
         })
     }
     // statistics
-    response = await $fetch(`${config.public.api}api/statistics/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}`, {
+    response = await $fetch(`${config.public.api}api/statistics/workers/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}`, {
         method: "GET",
         headers: {
             "Authorization": `Token ${getUser.value?.token}`
