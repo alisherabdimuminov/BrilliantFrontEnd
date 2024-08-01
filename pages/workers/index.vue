@@ -227,7 +227,23 @@ let colors = (d: Data, i: number) => ["#0ea5e9", "#ef4444"][i];
 
 const getData = async () => {
     if (date.value) {
-        let response: any = await $fetch(`${config.public.api}api/faces/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}${worker.value ? '&worker=' + worker.value : ''}`, {
+        let response: any = await $fetch(`${config.public.api}api/workers/count/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Token ${getUser.value?.token}`
+            }
+        });
+        workers_count.value = response.data.count;
+
+        response = await $fetch(`${config.public.api}api/customers/count/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Token ${getUser.value?.token}`
+            }
+        });
+        customers_count.value = response.data.count;
+
+        response = await $fetch(`${config.public.api}api/faces/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}${worker.value ? '&worker=' + worker.value : ''}`, {
             method: "GET",
             headers: {
                 "Authorization": `Token ${getUser.value?.token}`
