@@ -55,6 +55,34 @@
                         </Popover>
                     </div>
                 </div> <br>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Mijozlar</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div class="flex justify-between">
+                                <div>{{ customers_count }}</div>
+                                <div class="">
+                                    <ArrowUpFromDot :size="20" color="#22c55e" />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Ishchilar</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div class="flex justify-between">
+                                <div>{{ workers_count }}</div>
+                                <div class="">
+                                    <ArrowUpFromDot :size="20" color="#22c55e" />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div> <br>
                 <div>
                     <Select v-model="worker" v-on:update:model-value="update_worker">
                         <SelectTrigger>
@@ -160,6 +188,8 @@ interface Worker {
 
 const workers = ref<Worker[]>([]);
 const worker = ref();
+const workers_count = ref(0);
+const customers_count = ref(0);
 
 interface Info {
     id: number,
@@ -191,7 +221,7 @@ const y = [
     (d: Data) => d.y2,
 ];
 
-let colors = (d: Data, i: number) => ["#22c55e", "#ef4444"][i];
+let colors = (d: Data, i: number) => ["#0ea5e9", "#ef4444"][i];
 
 
 
@@ -248,6 +278,23 @@ const getData = async () => {
     });
     statistics.value = response.data.statistics;
     console.log(statistics.value);
+
+
+    response = await $fetch(`${config.public.api}api/workers/count/`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Token ${getUser.value?.token}`
+        }
+    });
+    workers_count.value = response.data.count;
+
+    response = await $fetch(`${config.public.api}api/customers/count/`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Token ${getUser.value?.token}`
+        }
+    });
+    customers_count.value = response.data.count;
 }
 
 
