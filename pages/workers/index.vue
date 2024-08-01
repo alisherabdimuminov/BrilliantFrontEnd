@@ -286,7 +286,7 @@ const getData = async () => {
     }
 
     // statistics
-    let response = await $fetch(`${config.public.api}api/statistics/workers/`, {
+    let response: any = await $fetch(`${config.public.api}api/statistics/workers/`, {
         method: "GET",
         headers: {
             "Authorization": `Token ${getUser.value?.token}`
@@ -370,6 +370,22 @@ const update = async (value: any) => {
     });
     statistics.value = response.data.statistics;
     console.log(statistics.value);
+
+    response = await $fetch(`${config.public.api}api/workers/count/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Token ${getUser.value?.token}`
+        }
+    });
+    workers_count.value = response.data.count;
+
+    response = await $fetch(`${config.public.api}api/customers/count/?day=${date.value.day}&month=${date.value.month}&year=${date.value.year}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Token ${getUser.value?.token}`
+        }
+    });
+    customers_count.value = response.data.count;
 }
 
 const update_worker = async () => {
